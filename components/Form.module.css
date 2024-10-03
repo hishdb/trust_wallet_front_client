@@ -1,0 +1,40 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent dark overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Ensure it's on top */
+  }
+  
+  /* Modal Content */
+  .modalContent {
+    position: relative;
+    background-color: #3C3D37; /* Card Background */
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+  }
+  
+  /* Close Button */
+  .closeButton {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .closeButton:hover {
+    color: #6A9C89; /* Accent color on hover */
+  }
