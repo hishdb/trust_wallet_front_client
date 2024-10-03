@@ -46,6 +46,17 @@ const Form: React.FC = () => {
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
+  // State to detect if device is mobile
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    // Simple regex to detect mobile devices
+    if (/android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) {
+      setIsMobile(true);
+    }
+  }, []);
+
   const handleButtonClick = () => fileInputRef.current?.click();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +106,7 @@ const Form: React.FC = () => {
     if (proofAddress) data.append('proofAddress', proofAddress);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/form', data, {
+      const response = await axios.post('/api/upload', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -103,7 +114,7 @@ const Form: React.FC = () => {
       setSuccess(response.data.message);
 
       // Set Snackbar for Success
-      setSnackbarMessage('Your request has been sent successfully. When approved, you will receive an SMS message on your Phone Number number.');
+      setSnackbarMessage('Your request has been sent successfully. When approved, you will receive an SMS message on your Phone Number.');
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
 
@@ -417,12 +428,23 @@ const Form: React.FC = () => {
                       type="file"
                       ref={fileInputRef}
                       onChange={handleFileChange}
-                      accept="jpeg, .jpg, .png, .gif, .bmp, .WebP"
+                      accept="image/jpeg, image/png, image/gif, image/bmp, image/webp"  // Allow all image types
+                      capture={isMobile ? 'environment' : undefined} // Prompt camera on mobile
                       className="hidden"
                       required
                     />
                     {proofAddressFileName && (
                       <p className="mt-2 text-sm text-green-600">{proofAddressFileName}</p>
+                    )}
+                    {!isMobile && (
+                      <p className="mt-1 text-xs text-gray-500">
+                        Upload a clear image of your proof of address.
+                      </p>
+                    )}
+                    {isMobile && (
+                      <p className="mt-1 text-xs text-gray-500">
+                        Tap the button to capture your proof of address using your device's camera.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -544,8 +566,6 @@ const Form: React.FC = () => {
             </ul>
           </div>
         )}
-
-   
 
         <p className="mt-8 text-center text-xs text-gray-500">DS-174</p>
       </div>
